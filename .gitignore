@@ -1,2 +1,4 @@
 /conus.geojson
 /venv
+google_api_key.txt
+.env
