@@ -1,3 +1,5 @@
 h3
 pandas
 folium
+sqlalchemy
+psycopg2
