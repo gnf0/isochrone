@@ -4,7 +4,7 @@ iso (ἴσος) = “equal, same”
 
 chrone (χρόνος) = “time”
 
-mappa = “table/chart”
+map (mappa) = “table/chart”
 
 <div style="display:flex; gap:5px;">
   <img src="photos/london_driving_iso.png" style="height:500px; object-fit:contain;">
@@ -94,7 +94,7 @@ The Goal of this project is to create contental sacle Isochrones with higher per
 What makes the methods used here unique?
 
 - Scale to continent size
-- High percision and resolution
+- High percision and resolution (isochrone borders accurace within 4.7 miles at resolution 6 and ~11 miles at resolution 5)
 - Not based on a specific carriers geographic service areas
 - Not based on historical transit data
 
