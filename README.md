@@ -1,64 +1,128 @@
-# Isochrone Maps
+# Isochrone Map Generation
 
-iso (ἴσος) = “equal, same”
+### iso (ἴσος) = “equal" / "same”
 
-chrone (χρόνος) = “time”
+### chrone (χρόνος) = “time”
 
-map (mappa) = “table/chart”
+<div style="text-align:center;">
+  <img src="photos/example_isochrone_generation.png"
+       style="height:500px; object-fit:contain;">
+  <div style="margin-top:8px; font-size:14px; color:#555;">
+    A Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.
+  </div>
+</div>
+<br>
+
+An **Isochrone Map** is a visualization displaying the geographic area reachable within a specified time or distance. Real-world data such as road networks, traffic, and public transport schedules are used to map true accessibility (e.g., a 30-minute commute or 2‑day delivery).
+
+---
+
+This tool that can be used to create <u>contental sacle</u> Isochrones with higher <u>percision</u> and <u>resolution</u> than existing resources available online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
+
+### What makes the methods used here unique?
+
+- Scale to continent size
+- Maintain High percision and resolution (isochrone borders are accurace within 4.7 miles at resolution 6)
+- Not based on a specific carriers geographic service areas
+- Not based on historical transit data
+
+### Benefits of these methods
+
+- Ability to generate isochrones for any given city within the continental United States  
+- Specify isochrone distance (miles per day)  
+- Not based on historical transit data — can plot a proposed or potential origin
+- No Google Maps API or other paid resources required  
+- No Maintenance of a large "Origin / Destiantion pairing table" required 
+- Interactive map (zoom and add other elements)
+
+## Requirements & Setup
+
+### PostGIS Database
+
+A PostGIS database is a SQL database containing coordinates and meta data on all "points" (eg addresses), "lines" (eg roads) and "geometries" (eg buildings) in given geographic area.
+
+
+#### Steps
+
+1. Install & Postgresql
+2. Download a .osm.pbf file here https://download.geofabrik.de (currently only contential united states is supported, download the dataset for North America > United States ~11GB) 
+3. Install the following Postgresql Extensions for the database
+  - plpgsql
+  - hstore
+  - postgis
+  - pgrouting
+4. Use osm2pgsql to load the .osm.pbf file into the database
+
+*Indepth instructions for steps 1-4 can be found online*
 
 <div style="display:flex; gap:5px;">
-  <img src="photos/london_driving_iso.png" style="height:500px; object-fit:contain;">
+  <img src="photos/osm_data_example_points.png" style="max-width:50%;">
+  <img src="photos/osm_data_example_geometries_lines.png" style="max-width:50%;">
 </div>
 
-An **Isochrone Map** is a visualization tool displaying the geographic area reachable within a specified time or distance. Real-world data such as road networks, traffic, and public transport schedules are used to map true accessibility (e.g., a 30-minute commute or 2‑day delivery).
+#### Fun Facts
+* A PostGIS database can function simmilar to Google Maps but can be run locally/offline/free
+* When set up for the United States this database contains 10s of millions of datapoints (~150 GB)
+* "PostGIS" = PostgreSQL + Geographic Information Systems
 
-**This project covers:**
+## Appendix
 
-1. Methods used to generation isochrone maps
-1. Limitations of traditional methods
-1. Techniques that can be used to create large scale, high resolution isochrone maps
-1. New applictions
+### Methods & Considerations
 
-## Exploring Existing Applictions & Methods
+#### H3 Hexagons
+
+Only 3 Polygons tile regularly: Triangles, Hexagons & Squares
+- no gaps
+- no overlaps
+- identical orientation at every vertex (same angle pattern everywhere)
+
+| Hexagon ✅ | Triangle ❌ | Square ❌ |
+|----------|---------|----------|
+| ![](photos/neighbors-hexagon.png) | ![](photos/neighbors-triangle.png) | ![](photos/neighbors-square.png) |
+| Hexagons have 6 *equidistant* neighbors | Triangles have 12 neighbors | Squares have 8 neighbors |
+
+Hexagons allow for the simpliest analysis of 2D movement (and look the best)
+
+### Exploring Existing Applictions & Methods
 
 Isochrone maps are most often created for short transit distances, typically intercity transit applications such as city planning, Uber, Zillow, and public transit.
 
-### Uber – San Francisco & Bangalore
+#### Uber – San Francisco & Bangalore
 
 <div style="display:flex; gap:5px;">
   <img src="photos/h3_sanfran_iso.png" style="height:500px; object-fit:contain;">
   <img src="photos/Uber_Bangalore_isochrone.png" style="height:500px; object-fit:contain;">
 </div>
 
-#### Application
+##### Application
 
 - Is there an available driver within 5 minutes of a user?
 - Where can a driver travel within 5 min?
 
-### Zillow - Beaverton
+#### Zillow - Beaverton
 
 
 <div style="display:flex; gap:5px;">
   <img src="photos/zillow_map.png" style="height:500px; object-fit:contain;">
 </div>
 
-#### Applicaiton
+##### Applicaiton
 
 - Users can filter listings based on commute distance
 
-### Public Transit – London (The Tube)
+#### Public Transit – London (The Tube)
 
 <div style="display:flex; gap:5px;">
   <img src="photos/london_public_transit_iso.avif" style="max-width:77%; height:auto; object-fit:contain;">
 </div>
 
-#### Application
+##### Application
 
 - City planners can identify gaps in accessibility of public transit
 
 Note: Precise subway isochrones often show “islands” of accessibility as underground travel can be used to reach isolated pockets that are farther from the origin than geographically closer but unreachable areas (e.g., Hampstead is farther from central London than the London Zoo but can be reached sooner by public transit).
 
-### Supply Chain Final Mile Delivery - United States
+#### Supply Chain Final Mile Delivery - United States
 
 Isochrones can also be generated for greater distances (often with less precision)
 
@@ -71,37 +135,14 @@ Isochrones can also be generated for greater distances (often with less precisio
   Precision/Resolution: Low to High
 </div>
 
-Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas which often extend exactly to state borders (FedEx/UPS)
+Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas which often extend exactly to state borders or other arbitray boundaries (FedEx/UPS)
 
 ## Limitations of Existing Methods
 
 ### Scaling to continental size
 
-Current methods used to generate isochrones for intercity transit, are too resource intensive to scale to contential size. Isochrone generation tools available online usually allow isochrones up to 60min (3hours max). Current methods to generate larger isochrones rely on specific carriers geographical service areas and/or historical transit data. These methods are not well suited for simulating large scale logistics networks or testing hypothetical origin locations. Current methods must trade percision & resolution for larger geographic scale.
+Current methods used to generate isochrones for intercity transit, are too resource intensive to scale to contential size. Isochrone generation tools available online usually allow isochrones up to 60min (3hours max). Current methods to generate larger isochrones rely on specific carriers geographical service areas and/or historical transportation data. These methods are not well suited for simulating large scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade percision & resolution for larger geographic scale.
 
 <div style="display:flex; gap:5px;">
   <img src="photos/res_vs_scale.png" style="height:400; object-fit:contain;">
 </div>
-
-## Isochrone Generation
-
-The Goal of this project is to create contental sacle Isochrones with higher percision and resolution than existing methods, allowing precise simulation and analysis of truckload transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
-
-<div style="display:flex; gap:5px;">
-  <img src="photos/example_isochrone_generation.png" style="height:550; object-fit:contain;">
-</div>
-
-What makes the methods used here unique?
-
-- Scale to continent size
-- High percision and resolution (isochrone borders accurace within 4.7 miles at resolution 6 and ~11 miles at resolution 5)
-- Not based on a specific carriers geographic service areas
-- Not based on historical transit data
-
-### Specs
-
-- Generate isochrones for any given city within the continental United States  
-- Specify isochrone distance (miles per day)  
-- Not based on historical transit data — can plot a proposed/potential origin (e.g., a prospective new warehouse facility)  
-- No Google Maps API or other paid resources required  
-- Interactive map (zoom and add other elements)
