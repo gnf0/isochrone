@@ -13,18 +13,17 @@
 </div>
 <br>
 
-An **Isochrone Map** is a visualization displaying the geographic area reachable within a specified time or distance. Real-world data such as road networks, traffic, and public transport schedules are used to map true accessibility (e.g., a 30-minute commute or 2‑day delivery).
+**Isochrone Map** simulates geographic areas reachable within a specified time or distance. Real-world data such as road networks, and/or traffic are used to map true accessibility (e.g., a 30-minute commute or 2‑day transit).
 
 ---
 
-This tool can be used to create **continental scale** Isochrones with higher **precision** and **resolution** than existing resources available online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
+This tool can be used to create **continental scale** Isochrones with higher **precision** and **resolution** than existing resources available for free online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
 
 ### What makes the methods used here unique?
 
 - Scale to continent size
 - Maintain high precision and resolution
-- Not based on a specific carrier's geographic service area
-- Not based on historical transit data
+- Based on real road distance (on a specific carrier's geographic service area or on historical transit data)
 
 ### Benefits of these methods
 
@@ -32,7 +31,7 @@ This tool can be used to create **continental scale** Isochrones with higher **p
 - Specify isochrone distance (miles per day)  
 - Not based on historical transit data — can plot a proposed or potential origin
 - No Google Maps API or other paid resources required  
-- No creation or maintenance of a large "Origin / Destination pairing table" required 
+- No on going maintenance of a large "Origin / Destination pairing table" is required 
 - Interactive map (zoom and add other elements)
 
 ## Quick Start
@@ -47,11 +46,11 @@ This tool can be used to create **continental scale** Isochrones with higher **p
    DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
    ```
 
-6. Open notebook `isochrone.ipynb` and Run All)
+6. Open notebook `isochrone.ipynb` and Run All
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/osm_data_example_points.png" style="max-width:50%;">
-  <!-- <img src="photos/osm_data_example_geometries_lines.png" style="max-width:50%;"> -->
+  <i>Example rendering of data contained in a PostGIS database.</i>
 </div>
 <br>
 
@@ -137,8 +136,9 @@ Isochrone maps are most often created for short transit distances, typically int
 #### Public Transit – London (The Tube)
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/london_public_transit_iso copy.png" style="height:auto; object-fit:contain;">
+  <img src="photos/london_public_transit_iso.png" style="height:auto; object-fit:contain;">
 </div>
+Source: traveltime.com
 
 ##### Application
 
@@ -170,3 +170,20 @@ Current methods used to generate isochrones for intercity transit are too resour
 <div style="display:flex; gap:5px;justify-content:center;">
   <img src="photos/res_vs_scale.png" style="object-fit:contain;">
 </div>
+
+## Credits
+
+"Dijkstra_Animation.gif" by User: Ibmua,
+from Wikimedia Commons:
+https://commons.wikimedia.org/wiki/File:Dijkstra_Animation.gif
+
+Licensed under CC BY-SA 3.0:
+https://creativecommons.org/licenses/by-sa/3.0/
+
+---
+
+"london_public_transit_iso.png"
+from traveltime.com
+https://traveltime.com/blog/free-isochrone-map-generator
+
+---
