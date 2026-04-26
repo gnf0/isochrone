@@ -8,7 +8,7 @@
   <img src="photos/example_isochrone_generation.png"
        style="height:500px; object-fit:contain;">
   <div style="margin-top:8px; font-size:14px; color:#555;">
-    A Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.
+    An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.
   </div>
 </div>
 <br>
