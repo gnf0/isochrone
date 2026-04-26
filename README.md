@@ -47,7 +47,7 @@ This tool can be used to create <u>continental scale</u> Isochrones with higher 
    DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
    ```
 
-6. Run `python isochrone.py` (or open the notebook in `old/isochrone.ipynb`)
+6. Open notebook `isochrone.ipynb` and Run All)
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/osm_data_example_points.png" style="max-width:50%;">
