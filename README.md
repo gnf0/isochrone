@@ -17,12 +17,12 @@ An **Isochrone Map** is a visualization displaying the geographic area reachable
 
 ---
 
-This tool that can be used to create <u>contental sacle</u> Isochrones with higher <u>percision</u> and <u>resolution</u> than existing resources available online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
+This tool can be used to create <u>continental scale</u> Isochrones with higher <u>precision</u> and <u>resolution</u> than existing resources available online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
 
 ### What makes the methods used here unique?
 
 - Scale to continent size
-- Maintain High percision and resolution
+- Maintain high precision and resolution
 - Not based on a specific carrier's geographic service area
 - Not based on historical transit data
 
@@ -32,33 +32,22 @@ This tool that can be used to create <u>contental sacle</u> Isochrones with high
 - Specify isochrone distance (miles per day)  
 - Not based on historical transit data — can plot a proposed or potential origin
 - No Google Maps API or other paid resources required  
-- No creation or maintenance of a large "Origin / Destiantion pairing table" required 
+- No creation or maintenance of a large "Origin / Destination pairing table" required 
 - Interactive map (zoom and add other elements)
 
-## Requirements & Setup
+## Quick Start
 
-### PostGIS Database
+1. `pip install -r requirements.txt`
+2. Set up a PostGIS database (PostgreSQL + PostGIS + pgrouting + hstore). (Full US OSM data = ~150GB, loading can take days.)
+3. Download US OSM data: https://download.geofabrik.de (North America → United States, ~11GB)
+4. Load with `osm2pgsql` (see online guides for details)
+5. Add a `config.py` file with your database connection info:
 
-A PostGIS database is a SQL database containing coordinates and meta data on all "points" (eg addresses), "lines" (eg roads) and "geometries" (eg buildings) in given geographic area.
+   ```python
+   DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
+   ```
 
-
-#### Steps
-
-1. Install PostgreSQL
-2. Download a .osm.pbf file here https://download.geofabrik.de (currently only contential united states is supported by this tool, download the dataset for North America -> United States ~11GB) 
-3. Install the following Postgresql Extensions for the database
-  - plpgsql
-  - hstore
-  - postgis
-  - pgrouting
-4. Use osm2pgsql to load the .osm.pbf file into the database
-5. Add a "config.py" file to the working directory that contains database connection info 
-
-> \# Example config.py
->
-> DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
-
-*Indepth instructions for steps 1-4 can be found online or provided by AI*
+6. Run `python isochrone.py` (or open the notebook in `old/isochrone.ipynb`)
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/osm_data_example_points.png" style="max-width:50%;">
@@ -66,31 +55,27 @@ A PostGIS database is a SQL database containing coordinates and meta data on all
 </div>
 <br>
 
-* A PostGIS database can function simmilar to Google Maps but can be run locally/offline/free
-* When setup for the United States this database contains 10s of millions of datapoints (~150 GB)
-* "PostGIS" = PostgreSQL + Geographic Information Systems
-
 ## Methods & Considerations
 
-Generally the methods used here can be summarized into the following steps
+Generally, the methods used here can be summarized into the following steps
 
-### These Step are run once, "precomputed"
-1. Divide a given geographic area (Continential United States) into even sized areas - <u>Cells</u>
+### These steps are run once, "precomputed"
+1. Divide a given geographic area (Continental United States) into even-sized areas - <u>Cells</u>
 2. Identify a <u>road point</u> inside each <u>cell</u>
 3. For each <u>cell's</u> <u>road point</u>, measure & log the transit distance to each neighboring <u>cell's</u> <u>road point</u> - <u>Cell Traversal Log</u>
 
 
 ### These steps are run each time an isochrone map is generated. For a given Isochrone origin & Isochrone increment:
 1. Identify which <u>cell</u> contains the <u>origin</u>
-2. Use the <u>Cell Traversal Log</u> to find travel distance from the orign cell accross all cells in the given georgaphic area 
-3. Group <u>Cells</u> by their <u>Isochrone increment</u> (if the <u>isochrone increment</u> is 500 miles, all cells with a transit distance of 0-499 miles from the origin cell are grouped together, same for all cells at 500-999 miles, etc)
+2. Use the <u>Cell Traversal Log</u> to find travel distance from the origin cell across all cells in the given geographic area 
+3. Group <u>Cells</u> by their <u>Isochrone increment</u> (if the <u>isochrone increment</u> is 500 miles, all cells with a transit distance of 0-499 miles from the origin cell are grouped together, same for all cells at 500-999 miles, etc.)
 4. Convert each <u>cell group</u> into <u>Polygons</u>
 5. Plot the <u>polygons</u> on a <u>map</u>
 
 
 ### Cells: H3 Hexagons
 
-To Cover a geographic area in relatively even sized cells, a polygon that tiles regularly should be used. Only 3 Polygons tile regularly: Triangles, Hexagons & Squares.
+To cover a geographic area in relatively even-sized cells, a polygon that tiles regularly should be used. Only 3 polygons tile regularly: Triangles, Hexagons & Squares.
 
 A polygon tiles regularly if there are
 - No gaps
@@ -102,11 +87,11 @@ A polygon tiles regularly if there are
 | ![](photos/neighbors-hexagon.png) | ![](photos/neighbors-triangle.png) | ![](photos/neighbors-square.png) |
 | Hexagons have 6 *equidistant* neighbors | Triangles have 12 neighbors at 3 unique distances | Squares have 8 neighbors at 2 unique distances |
 
-Because hexagons have the fewest neighbors & only have equidistant neighbors, hexagons allow for the simpliest analysis of 2D movement. Hexagons also look the best.
+Because hexagons have the fewest neighbors & only have equidistant neighbors, hexagons allow for the simplest analysis of 2D movement. Hexagons also look the best.
 
-### Identifing Road Snapped Points
+### Identifying Road Snapped Points
 
-In each Hexagon "Road Snapped Points" are identified (green dots). When selecting a road snapped point, priority is given to points close to the center of the cell (red dots). There is also some prefrence given to major highways over side roads and neighborhood roads.
+In each Hexagon, "Road Snapped Points" are identified (green dots). When selecting a road snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/road_snapped_point_vegas_big_dots.png" style= object-fit:contain;">
@@ -122,7 +107,7 @@ Once the distance from road snapped point to neighboring road snapped point has 
 
 ## Appendix
 
-### Exploring Existing Applictions & Methods
+### Exploring Existing Applications & Methods
 
 Isochrone maps are most often created for short transit distances, typically intercity transit applications such as city planning, Uber, Zillow, and public transit.
 
@@ -145,7 +130,7 @@ Isochrone maps are most often created for short transit distances, typically int
   <img src="photos/zillow_map.png" style="height:500px; object-fit:contain;">
 </div>
 
-##### Applicaiton
+##### Application
 
 - Users can filter listings based on commute distance
 
@@ -174,13 +159,13 @@ Isochrones can also be generated for greater distances (often with less precisio
   <!-- Precision/Resolution: Low to High -->
 </div>
 
-Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas which often extend exactly to state borders or other arbitray boundaries (FedEx/UPS)
+Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas which often extend exactly to state borders or other arbitrary boundaries (FedEx/UPS)
 
 ### Limitations of Existing Methods
 
 #### Scaling to continental size
 
-Current methods used to generate isochrones for intercity transit, are too resource intensive to scale to contential size. Isochrone generation tools available online usually allow isochrones up to 60min (3hours max). Current methods to generate larger isochrones rely on specific carriers geographical service areas and/or historical transportation data. These methods are not well suited for simulating large scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade percision & resolution for larger geographic scale.
+Current methods used to generate isochrones for intercity transit are too resource intensive to scale to continental size. Isochrone generation tools available online usually allow isochrones up to 60 min (3 hours max). Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade precision & resolution for larger geographic scale.
 
 <div style="display:flex; gap:5px;justify-content:center;">
   <img src="photos/res_vs_scale.png" style="height:400; object-fit:contain;">
