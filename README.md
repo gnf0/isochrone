@@ -8,7 +8,7 @@
   <img src="photos/example_isochrone_generation.png"
        style="object-fit:contain;">
   <div style="margin-top:8px; font-size:14px; color:#555;">
-    <i>An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
+    <i>Example Output: An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
   </div>
 </div>
 <br>
@@ -17,7 +17,7 @@ An **Isochrone Map** is a visualization displaying the geographic area reachable
 
 ---
 
-This tool can be used to create <u>continental scale</u> Isochrones with higher <u>precision</u> and <u>resolution</u> than existing resources available online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
+This tool can be used to create **continental scale** Isochrones with higher **precision** and **resolution** than existing resources available online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
 
 ### What makes the methods used here unique?
 
@@ -60,17 +60,17 @@ This tool can be used to create <u>continental scale</u> Isochrones with higher 
 Generally, the methods used here can be summarized into the following steps
 
 ### These steps are run once, "precomputed"
-1. Divide a given geographic area (Continental United States) into even-sized areas - <u>Cells</u>
-2. Identify a <u>road point</u> inside each <u>cell</u>
-3. For each <u>cell's</u> <u>road point</u>, measure & log the transit distance to each neighboring <u>cell's</u> <u>road point</u> - <u>Cell Traversal Log</u>
+1. Divide a given geographic area (Continental United States) into even-sized areas - **Cells**
+2. Identify a **road point** inside each **cell**
+3. For each **cell's** **road point**, measure & log the transit distance to each neighboring **cell's** **road point** - **Cell Traversal Log**
 
 
 ### These steps are run each time an isochrone map is generated. For a given Isochrone origin & Isochrone increment:
-1. Identify which <u>cell</u> contains the <u>origin</u>
-2. Use the <u>Cell Traversal Log</u> to find travel distance from the origin cell across all cells in the given geographic area 
-3. Group <u>Cells</u> by their <u>Isochrone increment</u> (if the <u>isochrone increment</u> is 500 miles, all cells with a transit distance of 0-499 miles from the origin cell are grouped together, same for all cells at 500-999 miles, etc.)
-4. Convert each <u>cell group</u> into <u>Polygons</u>
-5. Plot the <u>polygons</u> on a <u>map</u>
+1. Identify which **cell** contains the **origin**
+2. Use the **Cell Traversal Log** to find travel distance from the origin cell across all cells in the given geographic area 
+3. Group **Cells** by their **Isochrone increment** (if the **isochrone increment** is 500 miles, all cells with a transit distance of 0-499 miles from the origin cell are grouped together, same for all cells at 500-999 miles, etc.)
+4. Convert each **cell group** into **Polygons**
+5. Plot the **polygons** on a **map**
 
 
 ### Cells: H3 Hexagons
@@ -168,5 +168,5 @@ Isochrone lines landing exactly on state borders indicate these isochrones were 
 Current methods used to generate isochrones for intercity transit are too resource intensive to scale to continental size. Isochrone generation tools available online usually allow isochrones up to 60 min (3 hours max). Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade precision & resolution for larger geographic scale.
 
 <div style="display:flex; gap:5px;justify-content:center;">
-  <img src="photos/res_vs_scale.png" style="height:400; object-fit:contain;">
+  <img src="photos/res_vs_scale.png" style="object-fit:contain;">
 </div>
