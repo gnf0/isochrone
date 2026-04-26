@@ -13,16 +13,16 @@
 </div>
 <br>
 
-**Isochrone Map** simulates geographic areas reachable within a specified time or distance. Real-world data such as road networks, and/or traffic are used to map true accessibility (e.g., a 30-minute commute or 2‑day transit).
+An **Isochrone Map** simulates geographic areas reachable within a specified time or distance. Real-world data such as road networks and/or traffic are used to map true accessibility (e.g., a 30-minute commute or 2‑day transit).
 
 ---
 
-This tool can be used to create **continental scale** Isochrones with higher **precision** and **resolution** than existing resources available for free online. Methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
+This tool can be used to create **continental-scale** isochrones with higher **precision** and **resolution** than existing resources available for free online. The methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation, where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
 
 ### What makes the methods used here unique?
 
 - Scale to continent size
-- Maintain high precision and resolution
+- Maintains high precision and resolution
 - Based on real road distance (on a specific carrier's geographic service area or on historical transit data)
 
 ### Benefits of these methods
@@ -31,13 +31,13 @@ This tool can be used to create **continental scale** Isochrones with higher **p
 - Specify isochrone distance (miles per day)  
 - Not based on historical transit data — can plot a proposed or potential origin
 - No Google Maps API or other paid resources required  
-- No on going maintenance of a large "Origin / Destination pairing table" is required 
+- No ongoing maintenance of a large "Origin / Destination pairing table" is required 
 - Interactive map (zoom and add other elements)
 
 ## Quick Start
 
 1. `pip install -r requirements.txt`
-2. Set up a PostGIS database (PostgreSQL + PostGIS + pgrouting + hstore). (Full US OSM data = ~150GB, loading can take days.)
+2. Set up a PostGIS database (PostgreSQL + PostGIS + pgrouting + hstore). (Full US OSM data = ~150GB; loading can take days.)
 3. Download US OSM data: https://download.geofabrik.de (North America → United States, ~11GB)
 4. Load with `osm2pgsql` (see online guides for details)
 5. Add a `config.py` file with your database connection info:
@@ -46,7 +46,7 @@ This tool can be used to create **continental scale** Isochrones with higher **p
    DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
    ```
 
-6. Open notebook `isochrone.ipynb` and Run All
+6. Open the notebook `isochrone.ipynb` and Run All
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/osm_data_example_points.png" style="max-width:50%;">
@@ -56,27 +56,27 @@ This tool can be used to create **continental scale** Isochrones with higher **p
 
 ## Methods & Considerations
 
-Generally, the methods used here can be summarized into the following steps
+Generally, the methods used here can be summarized into the following steps:
 
-### These steps are run once, "precomputed"
+### These steps are run once, "precomputed":
 1. Divide a given geographic area (Continental United States) into even-sized areas - **Cells**
 2. Identify a **road point** inside each **cell**
-3. For each **cell's** **road point**, measure & log the transit distance to each neighboring **cell's** **road point** - **Cell Traversal Log**
+3. For each **cell's** **road point**, measure & log the transit distance to each neighboring **cell's** **road point** — **Cell Traversal Log**
 
 
-### These steps are run each time an isochrone map is generated. For a given Isochrone origin & Isochrone increment:
+### These steps are run each time an isochrone map is generated. For a given isochrone origin & isochrone increment:
 1. Identify which **cell** contains the **origin**
-2. Use the **Cell Traversal Log** to find travel distance from the origin cell across all cells in the given geographic area 
-3. Group **Cells** by their **Isochrone increment** (if the **isochrone increment** is 500 miles, all cells with a transit distance of 0-499 miles from the origin cell are grouped together, same for all cells at 500-999 miles, etc.)
-4. Convert each **cell group** into **Polygons**
+2. Use the **Cell Traversal Log** to find travel distance from the origin cell across all cells in the given geographic area.
+3. Group **cells** by their **isochrone increment** (if the **isochrone increment** is 500 miles, all cells with a transit distance of 0-499 miles from the origin cell are grouped together; same for all cells at 500-999 miles, etc.)
+4. Convert each **cell group** into **polygons**
 5. Plot the **polygons** on a **map**
 
 
 ### Cells: H3 Hexagons
 
-To cover a geographic area in relatively even-sized cells, a polygon that tiles regularly should be used. Only 3 polygons tile regularly: Triangles, Hexagons & Squares.
+To cover a geographic area in relatively even-sized cells, a polygon that tiles regularly should be used. Only three polygons tile regularly: triangles, hexagons, and squares.
 
-A polygon tiles regularly if there are
+A polygon tiles regularly if there are:
 - No gaps
 - No overlaps
 - Identical orientation at every vertex (same angle pattern everywhere)
@@ -86,11 +86,11 @@ A polygon tiles regularly if there are
 | ![](photos/neighbors-hexagon.png) | ![](photos/neighbors-triangle.png) | ![](photos/neighbors-square.png) |
 | Hexagons have 6 *equidistant* neighbors | Triangles have 12 neighbors at 3 unique distances | Squares have 8 neighbors at 2 unique distances |
 
-Because hexagons have the fewest neighbors & only have equidistant neighbors, hexagons allow for the simplest analysis of 2D movement. Hexagons also look the best.
+Because hexagons have the fewest neighbors and only have equidistant neighbors, hexagons allow for the simplest analysis of 2D movement. Hexagons also look the best.
 
 ### Identifying Road Snapped Points
 
-In each Hexagon, "Road Snapped Points" are identified (green dots). When selecting a road snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
+In each hexagon, "road-snapped points" are identified (green dots). When selecting a road-snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/road_snapped_point_vegas_big_dots.png" style= object-fit:contain;">
@@ -98,7 +98,7 @@ In each Hexagon, "Road Snapped Points" are identified (green dots). When selecti
 
 ### Cell to Cell Transit
 
-Once the distance from road snapped point to neighboring road snapped point has been found for all cells, Dijkstra's Algorithm can be used to find the shortest path from an origin cell to all other cells.
+Once the distance from road-snapped point to neighboring road-snapped point has been found for all cells, Dijkstra's Algorithm can be used to find the shortest path from an origin cell to all other cells.
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/Dijkstra_Animation.gif" style= object-fit:contain;">
@@ -108,7 +108,7 @@ Once the distance from road snapped point to neighboring road snapped point has 
 
 ### Exploring Existing Applications & Methods
 
-Isochrone maps are most often created for short transit distances, typically intercity transit applications such as city planning, Uber, Zillow, and public transit.
+Isochrone maps are most often created for short transit distances, typically for intercity transit applications such as city planning, Uber, Zillow, and public transit.
 
 #### Uber – San Francisco 
 
@@ -120,7 +120,7 @@ Isochrone maps are most often created for short transit distances, typically int
 ##### Application
 
 - Is there an available driver within 5 minutes of a user?
-- Where can a driver travel within 5 min?
+- Where can a driver travel within 5 minutes?
 
 #### Zillow - Beaverton
 
@@ -144,11 +144,11 @@ Source: traveltime.com
 
 - City planners can identify gaps in accessibility of public transit
 
-Note: Precise subway isochrones often show “islands” of accessibility as underground travel can be used to reach isolated pockets that are farther from the origin than geographically closer but unreachable areas (e.g., Hampstead is farther from central London than the London Zoo but can be reached sooner by public transit).
+Note: Precise subway isochrones often show “islands” of accessibility, as underground travel can be used to reach isolated pockets that are farther from the origin than geographically closer but unreachable areas (e.g., Hampstead is farther from central London than the London Zoo but can be reached sooner by public transit).
 
 #### Supply Chain Final Mile Delivery - United States
 
-Isochrones can also be generated for greater distances (often with less precision)
+Isochrones can also be generated for greater distances (often with less precision).
 
 <div style="display:flex; gap:2px; justify-content:center;">
   <!-- <img src="photos/simple_conus_isochrone.png" style="max-width:47%; height:auto; object-fit:contain;"> -->
@@ -159,13 +159,13 @@ Isochrones can also be generated for greater distances (often with less precisio
   <!-- Precision/Resolution: Low to High -->
 </div>
 
-Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas which often extend exactly to state borders or other arbitrary boundaries (FedEx/UPS)
+Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas, which often extend exactly to state borders or other arbitrary boundaries (FedEx/UPS).
 
 ### Limitations of Existing Methods
 
 #### Scaling to continental size
 
-Current methods used to generate isochrones for intercity transit are too resource intensive to scale to continental size. Isochrone generation tools available online usually allow isochrones up to 60 min (3 hours max). Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade precision & resolution for larger geographic scale.
+Current methods used to generate isochrones for intercity transit are too resource-intensive to scale to continental size. Isochrone generation tools available online usually allow isochrones up to 60 minutes (3 hours max). Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade precision and resolution for larger geographic scale.
 
 <div style="display:flex; gap:5px;justify-content:center;">
   <img src="photos/res_vs_scale.png" style="object-fit:contain;">
