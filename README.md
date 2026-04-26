@@ -62,7 +62,7 @@ A PostGIS database is a SQL database containing coordinates and meta data on all
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/osm_data_example_points.png" style="max-width:50%;">
-  <img src="photos/osm_data_example_geometries_lines.png" style="max-width:50%;">
+  <!-- <img src="photos/osm_data_example_geometries_lines.png" style="max-width:50%;"> -->
 </div>
 <br>
 
@@ -166,12 +166,12 @@ Note: Precise subway isochrones often show “islands” of accessibility as und
 Isochrones can also be generated for greater distances (often with less precision)
 
 <div style="display:flex; gap:2px; justify-content:center;">
-  <img src="photos/simple_conus_isochrone.png" style="max-width:47%; height:auto; object-fit:contain;">
-  <img src="photos/Pixilated_UPS_Ground_Transit_Time_Shipping_Map-01_1024x1024.webp" style="max-width:53%; height:auto; object-fit:contain;">
+  <!-- <img src="photos/simple_conus_isochrone.png" style="max-width:47%; height:auto; object-fit:contain;"> -->
+  <img src="photos/Pixilated_UPS_Ground_Transit_Time_Shipping_Map-01_1024x1024.webp" style=height:auto; object-fit:contain;">
   <!-- <img src="photos/fedex-shipping-map-72034.jpg" style="max-width:38%; height:auto; object-fit:contain;"> -->
 </div>
 <div style="text-align:center; font-weight:300; margin-bottom:6px;">
-  Precision/Resolution: Low to High
+  <!-- Precision/Resolution: Low to High -->
 </div>
 
 Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas which often extend exactly to state borders or other arbitray boundaries (FedEx/UPS)
