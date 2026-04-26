@@ -6,7 +6,7 @@
 
 <div style="text-align:center; justify-content:center;">
   <img src="photos/example_isochrone_generation.png"
-       style="height:500px; object-fit:contain;">
+       style="object-fit:contain;">
   <div style="margin-top:8px; font-size:14px; color:#555;">
     <i>An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
   </div>
@@ -114,7 +114,7 @@ Isochrone maps are most often created for short transit distances, typically int
 #### Uber – San Francisco 
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/h3_sanfran_iso.png" style="height:500px; object-fit:contain;">
+  <img src="photos/h3_sanfran_iso.png" style="object-fit:contain;">
   <!-- <img src="photos/Uber_Bangalore_isochrone.png" style="height:500px; object-fit:contain;"> -->
 </div>
 
@@ -127,7 +127,7 @@ Isochrone maps are most often created for short transit distances, typically int
 
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/zillow_map.png" style="height:500px; object-fit:contain;">
+  <img src="photos/zillow_map.png" style="object-fit:contain;">
 </div>
 
 ##### Application
@@ -137,7 +137,7 @@ Isochrone maps are most often created for short transit distances, typically int
 #### Public Transit – London (The Tube)
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/london_public_transit_iso.avif" style="max-width:77%; height:auto; object-fit:contain;">
+  <img src="photos/london_public_transit_iso copy.png" style="height:auto; object-fit:contain;">
 </div>
 
 ##### Application
