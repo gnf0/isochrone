@@ -1,8 +1,8 @@
 # Isochrone Map Generation
 
-### iso (ἴσος) = “equal" / "same”
+**iso (ἴσος) = “equal" / "same”**
 
-### chrone (χρόνος) = “time”
+**chrone (χρόνος) = “time”**
 
 <div style="text-align:center; justify-content:center;">
   <img src="photos/example_isochrone_generation.png"
