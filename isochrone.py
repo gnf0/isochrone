@@ -1,58 +1,86 @@
 #%%
-import numpy as np      # Math
-from sqlalchemy import create_engine, text  # Database
-import pandas as pd     # Dataframe
-import folium           # Map
-import h3               # Map Cells
-from shapely.ops import unary_union # Isochrone Geometries
-from shapely.geometry import Polygon, MultiPolygon, mapping
+# Numbers
+import numpy as np
 import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 
-# --- MAP CONFIG ---
-ORIGIN_CITY_STATE = "Denver, CO" # Any in Continental United States
+# Shapes
+from shapely.ops import unary_union
+from shapely.geometry import Polygon, MultiPolygon, mapping
+
+# Data
+from sqlalchemy import create_engine, text
+import pandas as pd
+from config import DATABASE_URL
+
+# Maps
+import h3
+import folium
+
+# --- ISOCHRONE MAP SETTINGS ---
+
+# Isolines
+ORIGIN_CITY_STATE = "Los Angeles, CA" # Any in Continental United States
 ISOLAYER_INCREMENT = 500 # Miles
 ISOCHRONE_RESOLUTION = 5 # 3-very_low, 4-low, 5-med, 6-high
-MAP_TILE_THEME = "OpenStreetMap"
 
-ISOCHRONE_COLOR_SCHEME = "Spectral"
-# ISOCHRONE_COLOR_SCHEME = "HSV"
-# ISOCHRONE_COLOR_SCHEME = "RdYlGn_r"
+
+# Color / Theme
+# MAP_TILE_THEME = "CartoDB positron" # while minimal
+MAP_TILE_THEME = "CartoDB darkmatter" # black minimal
+
+ISOCHRONE_OPACITY = 1
+
+# Better for white tiles
+# ISOCHRONE_COLOR_SCHEME = "turbo" # rainbow 9/10
+# ISOCHRONE_COLOR_SCHEME = "viridis_r" # purp, blue, green, yellow 8/10
+
+# Better for black tiles
+ISOCHRONE_COLOR_SCHEME = "RdYlGn_r" # red, yellow, blue 10/10
+# ISOCHRONE_COLOR_SCHEME = "Spectral_r" # rainbow 8/10
+
+
+def print_config(on=True):
+    if on:
+        print(f"""
+        🌎🌏 Generating Isochrone Map 🌎🌏
+
+        Origin:         {ORIGIN_CITY_STATE}, USA
+        Iso-Layers:     Increments of {ISOLAYER_INCREMENT} Miles
+        Iso-Resolution: {ISOCHRONE_RESOLUTION}
+        Tiles:          {MAP_TILE_THEME}
+        Iso-Colors:     {ISOCHRONE_COLOR_SCHEME}
+        """)
+
+print_config()
 
 # --- SQL ---
-ENGINE = create_engine(
-    "postgresql+psycopg2://postgres:password@192.168.0.102:5432/osm"
-)
+
+ENGINE = create_engine(DATABASE_URL)
 
 BATCH_SIZE = 5750
 
 # --- DATA SETS ---
+
 CITY_LAT_LNG = pd.read_csv("datasets/city_lat_long.csv") # Contains all US Cities, Towns, etc.
 
-# --- Verify CONFIG ---
-VERIFY_CONFIG = True
-
-def verify_config():
-    print(f"""
-    🌎🌏 Generating Isochrone Map 🌎🌏
-
-    Origin:         {ORIGIN_CITY_STATE}
-    Iso-Layers:     Increments of {ISOLAYER_INCREMENT} Miles
-    Iso-Resolution: {ISOCHRONE_RESOLUTION}
-    """)
-
-if VERIFY_CONFIG: verify_config()
-
-
 # --- Sub-Functions ---
-def identify_origin_cell(origin: str, resolution: int):
-    ORIGIN_STATE = ORIGIN_CITY_STATE[-2:]
-    ORIGIN_CITY = ORIGIN_CITY_STATE[:-4]
+
+def identify_origin_cell(origin: str, resolution: int, lat_lngs: pd.DataFrame = CITY_LAT_LNG) -> str:
+    """
+    Ex:
+        >>> identify_origin_cell("Portland, OR", n)
+        '8928a1d757bffff' 
+        👆 H3 cell ID with resolution: n (hex string)
+    """
+   
+    ORIGIN_STATE = origin[-2:]
+    ORIGIN_CITY = origin[:-4]
 
     # - 1 - find origin coordinates from origin name
-    origin_df = CITY_LAT_LNG.loc[
-        (CITY_LAT_LNG["city"] == ORIGIN_CITY) &
-        (CITY_LAT_LNG["state"] == ORIGIN_STATE)
+    origin_df = lat_lngs.loc[
+        (lat_lngs["city"] == ORIGIN_CITY) &
+        (lat_lngs["state"] == ORIGIN_STATE)
     ].reset_index(drop=True)
     
     ORIGIN_LAT = origin_df.loc[0, "latitude"]
@@ -62,18 +90,14 @@ def identify_origin_cell(origin: str, resolution: int):
     ORIGIN_CELL = h3.latlng_to_cell(
         lat=ORIGIN_LAT,
         lng=ORIGIN_LNG,
-        res=ISOCHRONE_RESOLUTION
+        res=resolution
     )    
 
     return ORIGIN_CELL
 
-
-ORIGIN_CELL = identify_origin_cell(ORIGIN_CITY_STATE, ISOCHRONE_RESOLUTION)
-
-
-def query_nodes(origin_cell, resolution):
+def query_nodes(origin_cell: str, resolution: int) -> pd.DataFrame:
     # - 1 - load node cache with road snapped points for resolution
-    nodes_df = pd.read_csv(f"datasets/initial_res_{ISOCHRONE_RESOLUTION}_points.csv")
+    nodes_df = pd.read_csv(f"datasets/initial_res_{resolution}_points.csv")
     nodes_df = nodes_df.loc[nodes_df["ValidSnap"] == True]
 
     nodes_df = nodes_df.drop(
@@ -88,10 +112,10 @@ def query_nodes(origin_cell, resolution):
 
     # Road snapped center point of origin cell
     ORIGIN_ROAD_SNAP_LAT = float(
-        nodes_df.loc[nodes_df["CellID"] == ORIGIN_CELL, "RSLatitude"].iloc[0]
+        nodes_df.loc[nodes_df["CellID"] == origin_cell, "RSLatitude"].iloc[0]
     )
     ORIGIN_ROAD_SNAP_LNG = float(
-        nodes_df.loc[nodes_df["CellID"] == ORIGIN_CELL, "RSLongitude"].iloc[0]
+        nodes_df.loc[nodes_df["CellID"] == origin_cell, "RSLongitude"].iloc[0]
     )
 
     # Prep dataframe for transit distance query
@@ -231,9 +255,6 @@ def query_nodes(origin_cell, resolution):
 
     return nodes_df
 
-
-# nodes_df = query_nodes(ORIGIN_CELL, ISOCHRONE_RESOLUTION)
-
 def get_unique_day_polygon(df, transit_day):
     filtered_df = df.loc[df["driving_distance_days"] == transit_day]
     h3_indexes = filtered_df["cell_id"].unique()
@@ -285,10 +306,8 @@ def set_isochrone_geometries(map_nodes_df, isolayer_increment):
 
     return geometries # this needs to be something that can just be "add to m"
 
-# ISOCHRONE_GEOMETRIES = set_isochrone_geometries(nodes_df, ISOLAYER_INCREMENT)
-
 def innitalize_map(map_tiles, origin_cell, isochrone_geometries):
-    cmap = cm.get_cmap(ISOCHRONE_COLOR_SCHEME)
+    cmap = cm.pyplot.get_cmap(ISOCHRONE_COLOR_SCHEME)
 
     norm_transit_days = mcolors.Normalize(vmin=1, vmax=max(isochrone_geometries))
     
@@ -311,14 +330,13 @@ def innitalize_map(map_tiles, origin_cell, isochrone_geometries):
             style_function=lambda feature, col=isochrone_color: {
                 "fill": True,
                 "color": col,
-                "fill_opacity": 0.9,
-                "weight": 1
+                "fill_opacity": ISOCHRONE_OPACITY,
+                "weight": 2
             }
         ).add_to(m)    
 
     return m
 
-# m = innitalize_map(MAP_TILE_THEME, ORIGIN_CELL, ISOCHRONE_GEOMETRIES)
 
 # --- Main Function ---
 def generate_isochrone_map(origin, resolution, isolayer_increment, map_tiles="cartoDBdarkmatter"):
@@ -337,14 +355,14 @@ def generate_isochrone_map(origin, resolution, isolayer_increment, map_tiles="ca
 
     return map
 
-#%%
 # --- Main Function Call ---
 m = generate_isochrone_map(
     origin=ORIGIN_CITY_STATE, 
-    miles_per_day=ISOLAYER_INCREMENT, 
+    # miles_per_day=ISOLAYER_INCREMENT, 
     resolution=ISOCHRONE_RESOLUTION, 
     isolayer_increment=ISOLAYER_INCREMENT,
     map_tiles=MAP_TILE_THEME)
 
-#%%
 m
+
+# %%
