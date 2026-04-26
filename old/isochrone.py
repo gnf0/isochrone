@@ -307,7 +307,7 @@ def set_isochrone_geometries(map_nodes_df, isolayer_increment):
     return geometries # this needs to be something that can just be "add to m"
 
 def innitalize_map(map_tiles, origin_cell, isochrone_geometries):
-    cmap = cm.pyplot.get_cmap(ISOCHRONE_COLOR_SCHEME)
+    cmap = cm.get_cmap(ISOCHRONE_COLOR_SCHEME)
 
     norm_transit_days = mcolors.Normalize(vmin=1, vmax=max(isochrone_geometries))
     
