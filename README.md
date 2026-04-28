@@ -1,4 +1,4 @@
-# Isochrone Map Generation
+# Isochrone Generation for Simulation & Analysis of Over The Road Transportation Networks
 
 **iso (ἴσος) = “equal" / "same”**
 
@@ -22,14 +22,14 @@ This tool can be used to create **continental-scale** isochrones with higher **p
 ### What makes the methods used here unique?
 
 - Scale to continent size
-- Maintains high precision and resolution
-- Based on real road distance (on a specific carrier's geographic service area or on historical transit data)
+- Maintain high precision and resolution
+- Based on actual road distance (not on historical transit data or a specific carrier's geographic service area)
 
 ### Benefits of these methods
 
-- Ability to generate isochrones for any given city within the continental United States  
+- Ability to generate isochrones using any city within the continental United States as an origin point  
 - Specify isochrone distance (miles per day)  
-- Not based on historical transit data — can plot a proposed or potential origin
+- Can plot a proposed or potential origin (not based on historical transit data)
 - No Google Maps API or other paid resources required  
 - No ongoing maintenance of a large "Origin / Destination pairing table" is required 
 - Interactive map (zoom and add other elements)
@@ -37,9 +37,9 @@ This tool can be used to create **continental-scale** isochrones with higher **p
 ## Quick Start
 
 1. `pip install -r requirements.txt`
-2. Set up a PostGIS database (PostgreSQL + PostGIS + pgrouting + hstore). (Full US OSM data = ~150GB; loading can take days.)
+2. Set up a PostGIS database (PostgreSQL + PostGIS + pgrouting + hstore). 
 3. Download US OSM data: https://download.geofabrik.de (North America → United States, ~11GB)
-4. Load with `osm2pgsql` (see online guides for details)
+4. Load with `osm2pgsql` (see online guides for details) (Full US OSM data = ~150GB; loading can take days.)
 5. Add a `config.py` file with your database connection info:
 
    ```python
@@ -50,6 +50,7 @@ This tool can be used to create **continental-scale** isochrones with higher **p
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/osm_data_example_points.png" style="max-width:50%;">
+  <br>
   <i>Example rendering of data contained in a PostGIS database.</i>
 </div>
 <br>
@@ -90,7 +91,7 @@ Because hexagons have the fewest neighbors and only have equidistant neighbors, 
 
 ### Identifying Road Snapped Points
 
-In each hexagon, "road-snapped points" are identified (green dots). When selecting a road-snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
+Once Hexagons are plotted on a map, "road-snapped points" are identified (green dots). When selecting a road-snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/road_snapped_point_vegas_big_dots.png" style= object-fit:contain;">
@@ -159,13 +160,13 @@ Isochrones can also be generated for greater distances (often with less precisio
   <!-- Precision/Resolution: Low to High -->
 </div>
 
-Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas, which often extend exactly to state borders or other arbitrary boundaries (FedEx/UPS).
+Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas, which often extend exactly to state borders and other arbitrary boundaries (FedEx/UPS).
 
 ### Limitations of Existing Methods
 
 #### Scaling to continental size
 
-Current methods used to generate isochrones for intercity transit are too resource-intensive to scale to continental size. Isochrone generation tools available online usually allow isochrones up to 60 minutes (3 hours max). Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade precision and resolution for larger geographic scale.
+Current methods used to generate isochrones for intercity transit are too resource-intensive to scale to continental size. Isochrone generation tools available online usually allow isochrones representing driving distances up to 60 minutes (3 hours max). Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade precision and resolution for larger geographic scale.
 
 <div style="display:flex; gap:5px;justify-content:center;">
   <img src="photos/res_vs_scale.png" style="object-fit:contain;">
