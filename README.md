@@ -1,11 +1,11 @@
-# Isochrone Generation for Simulation & Analysis of Over The Road Transportation Networks
+# Isochrone Generation for Simulation of Over The Road Transportation Networks
 
 **iso (ἴσος) = “equal" / "same”**
 
 **chrone (χρόνος) = “time”**
 
 <div style="text-align:center; justify-content:center;">
-  <img src="photos/example_isochrone_generation.png"
+  <img src="photos/Torrance_Isochrone_Example.gif"
        style="object-fit:contain;">
   <div style="margin-top:8px; font-size:14px; color:#555;">
     <i>Example Output: An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
@@ -49,7 +49,7 @@ This tool can be used to create **continental-scale** isochrones with higher **p
 6. Open the notebook `isochrone.ipynb` and Run All
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/osm_data_example_points.png" style="max-width:50%;">
+  <img src="photos/database_ploted_example.png" style="max-width:100%;">
   <br>
   <i>Example rendering of data contained in a PostGIS database.</i>
 </div>
