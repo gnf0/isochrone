@@ -5,7 +5,7 @@
 **chrone (χρόνος) = “time”**
 
 <div style="text-align:center; justify-content:center;">
-  <img src="photos/Torrance_Isochrone_Example.gif"
+  <img src="photos/isochrone_example_labels_pulse.gif"
        style="object-fit:contain;">
   <div style="margin-top:8px; font-size:14px; color:#555;">
     <i>Example Output: An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
