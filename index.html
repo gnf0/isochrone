@@ -84,7 +84,6 @@
         display:block;
         background:white;
       }
-      /* Responsive: stack on small screens */
       @media (max-width: 900px){
         #main{ grid-template-columns: 1fr; }
         .frameWrap{ height: 60vh; }
@@ -108,14 +107,15 @@
     </div>
 
     <script>
-      const MAP_FILES = ['Houston, TX_dist350_res5_dark.html', 'Houston, TX_dist500_res5_dark.html', 'Los Angeles, CA_dist350_res5_dark.html', 'Los Angeles, CA_dist500_res5_dark.html', 'Los Angeles, CA_dist500_res5_light_osm.html', 'Los Angeles, CA_dist500_res6_light_osm.html', 'New York, NY_dist350_res5_dark.html', 'New York, NY_dist500_res5_dark.html', 'Portland, OR_dist100_res6_dark.html', 'Savannah, GA_dist350_res5_dark.html', 'Savannah, GA_dist500_res5_dark.html'];
+      // These are paths relative to the site root, e.g. "html/map_foo.html"
+      const MAP_FILES = ['html/Houston, TX_dist350_res5_dark.html', 'html/Houston, TX_dist500_res5_dark.html', 'html/Los Angeles, CA_dist350_res5_dark.html', 'html/Los Angeles, CA_dist500_res5_dark.html', 'html/Los Angeles, CA_dist500_res5_light_osm.html', 'html/Los Angeles, CA_dist500_res6_light_osm.html', 'html/New York, NY_dist350_res5_dark.html', 'html/New York, NY_dist500_res5_dark.html', 'html/Portland, OR_dist100_res6_dark.html', 'html/Savannah, GA_dist350_res5_dark.html', 'html/Savannah, GA_dist500_res5_dark.html'];
 
       const listEl = document.getElementById("list");
       const filterEl = document.getElementById("filter");
       const frameEl = document.getElementById("frame");
 
       function labelFromFile(fname) {
-        return fname.replace(/\.html$/, "").replace(/_/g, " ");
+        return fname.replace(/\.html$/, "").replace(/.*\//, "").replace(/_/g, " ");
       }
 
       function render(items) {
@@ -125,9 +125,12 @@
           btn.type = "button";
           btn.className = "card";
 
+          const safeLabel = labelFromFile(f).replaceAll("<","&lt;").replaceAll(">","&gt;");
+          const safeFile = String(f).replaceAll("<","&lt;").replaceAll(">","&gt;");
+
           btn.innerHTML = `
-            <div class="cardTitle">${labelFromFile(f).replaceAll("<","&lt;").replaceAll(">","&gt;")}</div>
-            <div class="cardFile">${f.replaceAll("<","&lt;").replaceAll(">","&gt;")}</div>
+            <div class="cardTitle">${safeLabel}</div>
+            <div class="cardFile">${safeFile}</div>
           `;
 
           btn.addEventListener("click", () => {
@@ -144,7 +147,7 @@
 
       filterEl.addEventListener("input", () => {
         const q = filterEl.value.trim().toLowerCase();
-        const filtered = all.filter(f => f.toLowerCase().includes(q));
+        const filtered = all.filter(f => String(f).toLowerCase().includes(q));
         render(filtered);
         if (filtered.length) frameEl.src = filtered[0];
       });

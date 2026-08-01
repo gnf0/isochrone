@@ -1,13 +1,12 @@
 from pathlib import Path
 
 # --- configure these ---
-FOLDER = Path("html/")  # <-- change
-OUTPUT_INDEX_NAME = "index.html"
-# If you want a specific load order (optional), set a glob/pattern here.
-# Example: only include files matching "map_*.html"
+FOLDER = Path("html/")  # folder where your map pages live (e.g. html/map_*.html)
+OUTPUT_INDEX_NAME = "index.html"  # generated index.html location (we'll write it into repo root by default)
 GLOB_PATTERN = "*.html"
 # -----------------------
 
+# Collect map files (exclude the generated index.html if it happens to be inside FOLDER)
 html_files = sorted(
     [p for p in FOLDER.glob(GLOB_PATTERN) if p.is_file() and p.name != OUTPUT_INDEX_NAME]
 )
@@ -15,6 +14,11 @@ html_files = sorted(
 def label_from_file(fname: str) -> str:
     return fname.replace(".html", "").replace("_", " ")
 
+# Build URLs so iframe loads correctly when index.html is at repo root
+# Example result: ["html/map_one.html", "html/map_two.html"]
+map_urls = [f"{FOLDER.as_posix().rstrip('/')}/{p.name}" for p in html_files]
+
+# Use correct JS values (as an array of strings)
 index_html = f"""<!doctype html>
 <html>
   <head>
@@ -101,7 +105,6 @@ index_html = f"""<!doctype html>
         display:block;
         background:white;
       }}
-      /* Responsive: stack on small screens */
       @media (max-width: 900px){{
         #main{{ grid-template-columns: 1fr; }}
         .frameWrap{{ height: 60vh; }}
@@ -125,14 +128,15 @@ index_html = f"""<!doctype html>
     </div>
 
     <script>
-      const MAP_FILES = { [p.name for p in html_files]!r };
+      // These are paths relative to the site root, e.g. "html/map_foo.html"
+      const MAP_FILES = {map_urls!r};
 
       const listEl = document.getElementById("list");
       const filterEl = document.getElementById("filter");
       const frameEl = document.getElementById("frame");
 
       function labelFromFile(fname) {{
-        return fname.replace(/\\.html$/, "").replace(/_/g, " ");
+        return fname.replace(/\\.html$/, "").replace(/.*\\//, "").replace(/_/g, " ");
       }}
 
       function render(items) {{
@@ -142,9 +146,12 @@ index_html = f"""<!doctype html>
           btn.type = "button";
           btn.className = "card";
 
+          const safeLabel = labelFromFile(f).replaceAll("<","&lt;").replaceAll(">","&gt;");
+          const safeFile = String(f).replaceAll("<","&lt;").replaceAll(">","&gt;");
+
           btn.innerHTML = `
-            <div class="cardTitle">${{labelFromFile(f).replaceAll("<","&lt;").replaceAll(">","&gt;")}}</div>
-            <div class="cardFile">${{f.replaceAll("<","&lt;").replaceAll(">","&gt;")}}</div>
+            <div class="cardTitle">${{safeLabel}}</div>
+            <div class="cardFile">${{safeFile}}</div>
           `;
 
           btn.addEventListener("click", () => {{
@@ -161,7 +168,7 @@ index_html = f"""<!doctype html>
 
       filterEl.addEventListener("input", () => {{
         const q = filterEl.value.trim().toLowerCase();
-        const filtered = all.filter(f => f.toLowerCase().includes(q));
+        const filtered = all.filter(f => String(f).toLowerCase().includes(q));
         render(filtered);
         if (filtered.length) frameEl.src = filtered[0];
       }});
@@ -170,6 +177,10 @@ index_html = f"""<!doctype html>
 </html>
 """
 
-(FOLDER / OUTPUT_INDEX_NAME).write_text(index_html, encoding="utf-8")
-print(f"Wrote {(FOLDER / OUTPUT_INDEX_NAME).resolve()}")
+# Write index.html to repo root (so it becomes site root)
+# If you want it inside html/, change this to FOLDER / OUTPUT_INDEX_NAME.
+out_path = Path(OUTPUT_INDEX_NAME)
+out_path.write_text(index_html, encoding="utf-8")
+
+print(f"Wrote {out_path.resolve()}")
 print(f"Included {len(html_files)} map files.")
