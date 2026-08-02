@@ -4,12 +4,11 @@
 
 **chrone (χρόνος) = “time”**
 
-<div style="text-align:center; justify-content:center;">
-  <img src="photos/example_isochrone_generation.png"
-       style="object-fit:contain;">
-  <div style="margin-top:8px; font-size:14px; color:#555;">
+<div align="center">
+  <img src="photos/example_isochrone_generation.png">
+  <p>
     <i>Example Output: An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
-  </div>
+  </p>
 </div>
 <br>
 
@@ -52,11 +51,11 @@ This tool can be used to create **continental-scale** isochrones with higher **p
 
 ---
 
-<div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/database_ploted_example.png" style="max-width:100%;">
-  <div style="margin-top:8px; font-size:14px; color:#555;">
+<div align="center">
+  <img src="photos/database_ploted_example.png">
+  <p>
     <i>Example rendering of data contained in a PostGIS database.</i>
-  </div>
+  </p>
 </div>
 <br>
 
@@ -99,15 +98,16 @@ Because hexagons have the fewest neighbors and only have equidistant neighbors, 
 
 Once Hexagons are plotted on a map, "road-snapped points" are identified (green dots). When selecting a road-snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
 
-<div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/road_snapped_points_example_res5.png" style= object-fit:contain;">
-  <div style="margin-top:8px; font-size:14px; color:#555;">
+<div align="center">
+  <img src="photos/road_snapped_points_example_res5.png" alt="Road-snapped points example">
+
+  <p>
     <i>
-    Blue: Cell Center
-    Green: Valid Road-Snapped Point
-    Red: Invalid Road-Snapped Point
+      Blue: Cell Center<br>
+      Green: Valid Road-Snapped Point<br>
+      Red: Invalid Road-Snapped Point
     </i>
-  </div>
+  </p>
 </div>
 
 ### Cell to Cell Transit
