@@ -5,13 +5,15 @@
 **chrone (χρόνος) = “time”**
 
 <div style="text-align:center; justify-content:center;">
-  <img src="photos/isochrone_example_labels_pulse.gif"
+  <img src="photos/example_isochrone_generation.png"
        style="object-fit:contain;">
   <div style="margin-top:8px; font-size:14px; color:#555;">
     <i>Example Output: An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
   </div>
 </div>
 <br>
+
+Interactive Examples: http://ischr.one
 
 An **Isochrone Map** simulates geographic areas reachable within a specified time or distance. Real-world data such as road networks and/or traffic are used to map true accessibility (e.g., a 30-minute commute or 2‑day transit).
 
@@ -37,9 +39,9 @@ This tool can be used to create **continental-scale** isochrones with higher **p
 ## Quick Start
 
 1. `pip install -r requirements.txt`
-2. Set up a PostGIS database (PostgreSQL + PostGIS + pgrouting + hstore). 
-3. Download US OSM data: https://download.geofabrik.de (North America → United States, ~11GB)
-4. Load with `osm2pgsql` (see online guides for details) (Full US OSM data = ~150GB; loading can take days.)
+2. Download Database dump file here https://zenodo.org/records/21645628 
+3. Create a PostgreSQL database (e.g. osm_routing)
+4. Restore the downloaded database dump into the database
 5. Add a `config.py` file with your database connection info:
 
    ```python
@@ -48,12 +50,16 @@ This tool can be used to create **continental-scale** isochrones with higher **p
 
 6. Open the notebook `isochrone.ipynb` and Run All
 
+---
+
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/database_ploted_example.png" style="max-width:100%;">
-  <br>
-  <i>Example rendering of data contained in a PostGIS database.</i>
+  <div style="margin-top:8px; font-size:14px; color:#555;">
+    <i>Example rendering of data contained in a PostGIS database.</i>
+  </div>
 </div>
 <br>
+
 
 ## Methods & Considerations
 
@@ -94,12 +100,19 @@ Because hexagons have the fewest neighbors and only have equidistant neighbors, 
 Once Hexagons are plotted on a map, "road-snapped points" are identified (green dots). When selecting a road-snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/road_snapped_point_vegas_big_dots.png" style= object-fit:contain;">
+  <img src="photos/road_snapped_points_example_res5.png" style= object-fit:contain;">
+  <div style="margin-top:8px; font-size:14px; color:#555;">
+    <i>
+    Blue: Cell Center
+    Green: Valid Road-Snapped Point
+    Red: Invalid Road-Snapped Point
+    </i>
+  </div>
 </div>
 
 ### Cell to Cell Transit
 
-Once the distance from road-snapped point to neighboring road-snapped point has been found for all cells, Dijkstra's Algorithm can be used to find the shortest path from an origin cell to all other cells.
+Once the distance from road-snapped point to neighboring road-snapped point has been found for all cells (with valid road-snapped points), Dijkstra's Algorithm can be used to find the shortest path from an origin cell to all other cells.
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/Dijkstra_Animation.gif" style= object-fit:contain;">
