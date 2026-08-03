@@ -96,7 +96,7 @@ Because hexagons have the fewest neighbors and only have equidistant neighbors, 
 
 ### Identifying Road Snapped Points
 
-Once Hexagons are plotted on a map, "road-snapped points" are identified (green dots). When selecting a road-snapped point, priority is given to points close to the center of the cell (red dots). There is also some preference given to major highways over side roads and neighborhood roads.
+When selecting a road-snapped point, priority is given to points close to the center of the cell (blue). There is also some preference given to major highways over side roads and neighborhood roads.
 
 <div align="center">
   <img src="photos/road_snapped_points_example_res5.png" alt="Road-snapped points example">
@@ -104,8 +104,8 @@ Once Hexagons are plotted on a map, "road-snapped points" are identified (green 
   <p>
     <i>
       Blue: Cell Center<br>
-      Green: Valid Road-Snapped Point<br>
-      Red: Invalid Road-Snapped Point
+      Green: Valid Road-Snapped Point (road point is within cell)<br>
+      Red: Invalid Road-Snapped Point (road point falls outside cell)
     </i>
   </p>
 </div>
@@ -120,7 +120,7 @@ Once the distance from road-snapped point to neighboring road-snapped point has 
 
 ## Appendix
 
-### Exploring Existing Applications & Methods
+### Exploring Existing Isochrone Applications & Methods
 
 Isochrone maps are most often created for short transit distances, typically for intercity transit applications such as city planning, Uber, Zillow, and public transit.
 
