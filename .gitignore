@@ -8,3 +8,8 @@ __pycache__/isochrone.cpython-314.pyc
 to_do.md
 .DS_Store
 photos/.DS_Store
+html/cell_resolutions[1,2,3,4,5,6].html
+html/cell_resolutions\[1, 2, 3, 4, 5, 6].html
+# Ignore generated notebooks and HTML outputs
+*.ipynb
+html/*.html
