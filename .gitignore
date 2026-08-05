@@ -10,6 +10,4 @@ to_do.md
 photos/.DS_Store
 html/cell_resolutions[1,2,3,4,5,6].html
 html/cell_resolutions\[1, 2, 3, 4, 5, 6].html
-# Ignore generated notebooks and HTML outputs
-*.ipynb
-html/*.html
+
