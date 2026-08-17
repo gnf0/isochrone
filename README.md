@@ -21,17 +21,17 @@ An **Isochrone Map** simulates geographic areas reachable within a specified tim
 
 This tool can be used to create **continental-scale** isochrones with high **precision** and **resolution**. The methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation, where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
 
-### What makes the methods used here unique?
+-### What makes the methods used here unique?
 
-- Continential scale
+- Continental scale
 - High precision
 - Based on actual road distance (not on historical transit data or a specific carrier's geographic service areas)
 
 ### Benefits of these methods
 
 - Ability to vary origin location and isochrone distance (miles per day)
-- No Google Maps API or other paid (all dependencies are free and open source)  
-- Isochrones can be used instead of an "Origin / Destination pairing table" in many applications. Alternativley, isochrones can be used to aid in the maintenance these tables inevitably require.
+- No Google Maps API or other paid services — all dependencies are free and open source.  
+- Isochrones can be used instead of an "Origin / Destination pairing table" in many applications. Alternatively, isochrones can help with maintenance of these tables.
 - Extensibility: The map & underlying data can be enhanced and contextualized with other supply chain data & visuals.
 
 #### *Jump to Bottom for Quick Start*
@@ -51,7 +51,7 @@ Generally, the methods used here can be summarized into 3 steps.
 
 #### Hexagons simplify analysis of 2D movement
 
-To cover a geographic area in even-sized cells, a polygon that tiles regularly should be used (no gaps, no overlaps, identical orientaion at each vertex).
+To cover a geographic area in even-sized cells, a polygon that tiles regularly should be used (no gaps, no overlaps, identical orientation at each vertex).
 
 | Hexagon ✅ | Triangle ❌ | Square ❌ |
 |----------|---------|----------|
@@ -78,7 +78,7 @@ When selecting a road-snapped point, priority is given to points close to the ce
 
 *"Road snapping" can also be configured to include or exclude railways and waterways.*
 
-#### Road point identification is enabled by a GIS Database.
+#### Road point identification is enabled by a GIS database.
 <div align="left">
   <img src="photos/database_ploted_example.png">
   <p>
@@ -96,7 +96,7 @@ When selecting a road-snapped point, priority is given to points close to the ce
 
 <br>
 
-Once the distance from road-snapped point to neighboring road-snapped point has been found for all cells, Dijkstra's Algorithm is used to find the shortest path from an origin cell to all other cells.
+Once the distance from each road-snapped point to neighboring road-snapped points has been calculated for all cells, Dijkstra's algorithm is used to find the shortest paths from an origin cell to all other cells.
 
 <div style="display:flex; gap:5px;">
   <img src="photos/Dijkstra_Animation.gif" style="object-fit:contain;">
@@ -104,19 +104,19 @@ Once the distance from road-snapped point to neighboring road-snapped point has 
 
 
 
-#### Cell Grouped Based on Distance from Origin
+#### Cells Grouped Based on Distance from Origin
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/isochrone_res_4_dark_denver_example.png" style= object-fit:contain;">
 </div>
 
-This map and the underlying data create a single framework that can be used to analyse
+This map and the underlying data create a single framework that can be used to analyze
 
 1. Current state 
 2. Historical data
 3. Forecasts and Simulations  
 
-The ability to change isochrone distance (miles per day) and resolution (cell size) remains consistent accross all uses.
+The ability to change isochrone distance (miles per day) and resolution (cell size) remains consistent across all uses.
 
 ## Appendix
 
@@ -136,7 +136,7 @@ Isochrone maps are most often created for short transit distances, typically for
 - Is there an available driver within 5 minutes of a user?
 - Where can a driver travel within 5 minutes?
 
-Identifying if a user falls within a given precalculated area is much easier than finding the distance from a user to the nearest driver.
+Determining whether a user falls within a precomputed area is much easier than finding the distance to the nearest driver.
 
 #### Zillow - Beaverton
 
@@ -199,7 +199,7 @@ Current methods used to generate isochrones for intercity transit are too resour
    DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
    ```
 
-6. Open the notebook `isochrone.ipynb` and Run All
+6. Open the notebook `isochrone.ipynb` and run all cells
 
 ## Credits
 
