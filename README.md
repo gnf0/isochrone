@@ -15,8 +15,6 @@
 </div>
 <br>
 
-Interactive Examples: http://ischr.one
-
 An **Isochrone Map** simulates geographic areas reachable within a specified time or distance. Real-world data such as road networks and/or traffic are used to map true accessibility (e.g., a 30-minute commute or 2‑day transit).
 
 ---
