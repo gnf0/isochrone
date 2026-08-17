@@ -110,6 +110,13 @@ Once the distance from road-snapped point to neighboring road-snapped point has 
   <img src="photos/isochrone_res_4_dark_denver_example.png" style= object-fit:contain;">
 </div>
 
+This map and the underlying data create a single framework that can be used to analyse
+
+1. Current state 
+2. Historical data
+3. Forecasts and Simulations  
+
+The ability to change isochrone distance (miles per day) and resolution (cell size) remains consistent accross all uses.
 
 ## Appendix
 
