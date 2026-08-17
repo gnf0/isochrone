@@ -1,10 +1,13 @@
 # Isochrone Generation for Simulation of Over The Road Transportation Networks
 
-**iso (ἴσος) = “equal" / "same”**
+**iso (ἴσος) = “equal"**
 
 **chrone (χρόνος) = “time”**
 
-<div align="center">
+
+
+
+<div align="left">
   <img src="photos/example_isochrone_generation.png">
   <p>
     <i>Example Output: An Isochrone Map of the United States. Isochrones here use Los Angeles, CA as an origin point and show road driving increments of 500 miles.</i>
@@ -18,105 +21,97 @@ An **Isochrone Map** simulates geographic areas reachable within a specified tim
 
 ---
 
-This tool can be used to create **continental-scale** isochrones with higher **precision** and **resolution** than existing resources available for free online. The methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation, where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
+This tool can be used to create **continental-scale** isochrones with high **precision** and **resolution**. The methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation, where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
 
 ### What makes the methods used here unique?
 
-- Scale to continent size
-- Maintain high precision and resolution
-- Based on actual road distance (not on historical transit data or a specific carrier's geographic service area)
+- Continential scale
+- High precision
+- Based on actual road distance (not on historical transit data or a specific carrier's geographic service areas)
 
 ### Benefits of these methods
 
-- Ability to generate isochrones using any city within the continental United States as an origin point  
-- Specify isochrone distance (miles per day)  
-- Can plot a proposed or potential origin (not based on historical transit data)
-- No Google Maps API or other paid resources required  
-- No ongoing maintenance of a large "Origin / Destination pairing table" is required 
-- Interactive map (zoom and add other elements)
+- Ability to vary origin location and isochrone distance (miles per day)
+- No Google Maps API or other paid (all dependencies are free and open source)  
+- Isochrones can be used instead of an "Origin / Destination pairing table" in many applications. Alternativley, isochrones can be used to aid in the maintenance these tables inevitably require.
+- Extensibility: The map & underlying data can be enhanced and contextualized with other supply chain data & visuals.
 
-## Quick Start
+#### *Jump to Bottom for Quick Start*
 
-1. `pip install -r requirements.txt`
-2. Download Database dump file here https://zenodo.org/records/21645628 
-3. Create a PostgreSQL database (e.g. osm_routing)
-4. Restore the downloaded database dump into the database
-5. Add a `config.py` file with your database connection info:
-
-   ```python
-   DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
-   ```
-
-6. Open the notebook `isochrone.ipynb` and Run All
-
----
-
-<div align="center">
-  <img src="photos/database_ploted_example.png">
-  <p>
-    <i>Example rendering of data contained in a PostGIS database.</i>
-  </p>
-</div>
-<br>
-
+___
 
 ## Methods & Considerations
 
-Generally, the methods used here can be summarized into the following steps:
-
-### These steps are run once, "precomputed":
-1. Divide a given geographic area (Continental United States) into even-sized areas - **Cells**
-2. Identify a **road point** inside each **cell**
-3. For each **cell's** **road point**, measure & log the transit distance to each neighboring **cell's** **road point** — **Cell Traversal Log**
+Generally, the methods used here can be summarized into 3 steps.
 
 
-### These steps are run each time an isochrone map is generated. For a given isochrone origin & isochrone increment:
-1. Identify which **cell** contains the **origin**
-2. Use the **Cell Traversal Log** to find travel distance from the origin cell across all cells in the given geographic area.
-3. Group **cells** by their **isochrone increment** (if the **isochrone increment** is 500 miles, all cells with a transit distance of 0-499 miles from the origin cell are grouped together; same for all cells at 500-999 miles, etc.)
-4. Convert each **cell group** into **polygons**
-5. Plot the **polygons** on a **map**
+### Step 1 - Divide a given geographic area into even-sized cells (h3 Hexagons)
 
+<div style="display:flex; gap:5px; justify-content:center;">
+  <img src="photos/resolution 3 example.png" style= object-fit:contain;">
+</div>
 
-### Cells: H3 Hexagons
+#### Hexagons simplify analysis of 2D movement
 
-To cover a geographic area in relatively even-sized cells, a polygon that tiles regularly should be used. Only three polygons tile regularly: triangles, hexagons, and squares.
-
-A polygon tiles regularly if there are:
-- No gaps
-- No overlaps
-- Identical orientation at every vertex (same angle pattern everywhere)
+To cover a geographic area in even-sized cells, a polygon that tiles regularly should be used (no gaps, no overlaps, identical orientaion at each vertex).
 
 | Hexagon ✅ | Triangle ❌ | Square ❌ |
 |----------|---------|----------|
 | ![](photos/neighbors-hexagon.png) | ![](photos/neighbors-triangle.png) | ![](photos/neighbors-square.png) |
 | Hexagons have 6 *equidistant* neighbors | Triangles have 12 neighbors at 3 unique distances | Squares have 8 neighbors at 2 unique distances |
 
-Because hexagons have the fewest neighbors and only have equidistant neighbors, hexagons allow for the simplest analysis of 2D movement. Hexagons also look the best.
 
-### Identifying Road Snapped Points
 
-When selecting a road-snapped point, priority is given to points close to the center of the cell (blue). There is also some preference given to major highways over side roads and neighborhood roads.
+### Step 2 - Identify a Road Point inside each cell
 
-<div align="center">
-  <img src="photos/road_snapped_points_example_res5.png" alt="Road-snapped points example">
+
+<div align="left">
+  <img src="photos/road_snapped_points_example_res4.png" alt="Road-snapped points example">
 
   <p>
     <i>
-      Blue: Cell Center<br>
       Green: Valid Road-Snapped Point (road point is within cell)<br>
       Red: Invalid Road-Snapped Point (road point falls outside cell)
     </i>
   </p>
 </div>
 
-### Cell to Cell Transit
+When selecting a road-snapped point, priority is given to points close to the center of the cell. There is also some preference given to major highways over side roads and neighborhood roads. 
 
-Once the distance from road-snapped point to neighboring road-snapped point has been found for all cells (with valid road-snapped points), Dijkstra's Algorithm can be used to find the shortest path from an origin cell to all other cells.
+*"Road snapping" can also be configured to include or exclude railways and waterways.*
+
+#### Road point identification is enabled by a GIS Database.
+<div align="left">
+  <img src="photos/database_ploted_example.png">
+  <p>
+    <i> Example rendering of data contained in a PostGIS database.</i>
+  </p>
+</div>
+<br>
+
+
+### Step 3 - Cell to Cell Transit
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/Dijkstra_Animation.gif" style= object-fit:contain;">
+  <img src="photos/cell_labels_los_angles.png" style="object-fit:contain;">
 </div>
+
+<br>
+
+Once the distance from road-snapped point to neighboring road-snapped point has been found for all cells, Dijkstra's Algorithm is used to find the shortest path from an origin cell to all other cells.
+
+<div style="display:flex; gap:5px;">
+  <img src="photos/Dijkstra_Animation.gif" style="object-fit:contain;">
+</div>
+
+
+
+#### Cell Grouped Based on Distance from Origin
+
+<div style="display:flex; gap:5px; justify-content:center;">
+  <img src="photos/isochrone_res_4_dark_denver_example.png" style= object-fit:contain;">
+</div>
+
 
 ## Appendix
 
@@ -135,6 +130,8 @@ Isochrone maps are most often created for short transit distances, typically for
 
 - Is there an available driver within 5 minutes of a user?
 - Where can a driver travel within 5 minutes?
+
+Identifying if a user falls within a given precalculated area is much easier than finding the distance from a user to the nearest driver.
 
 #### Zillow - Beaverton
 
@@ -165,8 +162,8 @@ Note: Precise subway isochrones often show “islands” of accessibility, as un
 Isochrones can also be generated for greater distances (often with less precision).
 
 <div style="display:flex; gap:2px; justify-content:center;">
-  <!-- <img src="photos/simple_conus_isochrone.png" style="max-width:47%; height:auto; object-fit:contain;"> -->
-  <img src="photos/Pixilated_UPS_Ground_Transit_Time_Shipping_Map-01_1024x1024.webp" style=height:auto; object-fit:contain;">
+  <img src="photos/simple_conus_isochrone.png" style="height:350; object-fit:contain;">
+  <img src="photos/Pixilated_UPS_Ground_Transit_Time_Shipping_Map-01_1024x1024.webp" style=height:350; object-fit:contain;">
   <!-- <img src="photos/fedex-shipping-map-72034.jpg" style="max-width:38%; height:auto; object-fit:contain;"> -->
 </div>
 <div style="text-align:center; font-weight:300; margin-bottom:6px;">
@@ -184,6 +181,20 @@ Current methods used to generate isochrones for intercity transit are too resour
 <div style="display:flex; gap:5px;justify-content:center;">
   <img src="photos/res_vs_scale.png" style="object-fit:contain;">
 </div>
+
+## Quick Start
+
+1. `pip install -r requirements.txt`
+2. Download Database dump file here https://zenodo.org/records/21645628 
+3. Create a PostgreSQL database (e.g. osm_routing)
+4. Restore the downloaded database dump into the database
+5. Add a `config.py` file with your database connection info:
+
+   ```python
+   DATABASE_URL = "postgresql+psycopg2://postgres:password@192.168.0.123:5432/osm_routing"
+   ```
+
+6. Open the notebook `isochrone.ipynb` and Run All
 
 ## Credits
 
