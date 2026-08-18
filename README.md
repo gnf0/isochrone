@@ -91,7 +91,7 @@ When selecting a road-snapped point, priority is given to points close to the ce
 ### Step 3 - Cell to Cell Transit
 
 <div style="display:flex; gap:5px; justify-content:center;">
-  <img src="photos/cell_labels_los_angles.png" style="object-fit:contain;">
+  <img src="photos/cell_labels_los_angeles.png" style="object-fit:contain;">
 </div>
 
 <br>
