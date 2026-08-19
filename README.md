@@ -21,7 +21,14 @@ An **Isochrone Map** simulates geographic areas reachable within a specified tim
 
 This tool can be used to create **continental-scale** isochrones with high **precision** and **resolution**. The methods used here uniquely allow for simulation and analysis of *Over The Road* (OTR) transportation, where service is generally provided at a standard distance per day (e.g., 500 or 1000 miles).
 
--### What makes the methods used here unique?
+
+#### *Jump to Bottom for Quick Start*
+
+___
+
+## Methods & Considerations
+
+### What makes the methods used here unique?
 
 - Continental scale
 - High precision
@@ -33,12 +40,6 @@ This tool can be used to create **continental-scale** isochrones with high **pre
 - No Google Maps API or other paid services — all dependencies are free and open source.  
 - Isochrones can be used instead of an "Origin / Destination pairing table" in many applications. Alternatively, isochrones can help with maintenance of these tables.
 - Extensibility: The map & underlying data can be enhanced and contextualized with other supply chain data & visuals.
-
-#### *Jump to Bottom for Quick Start*
-
-___
-
-## Methods & Considerations
 
 Generally, the methods used here can be summarized into 3 steps.
 
@@ -85,8 +86,6 @@ When selecting a road-snapped point, priority is given to points close to the ce
     <i> Example rendering of data contained in a PostGIS database.</i>
   </p>
 </div>
-<br>
-
 
 ### Step 3 - Cell to Cell Transit
 
@@ -102,21 +101,15 @@ Once the distance from each road-snapped point to neighboring road-snapped point
   <img src="photos/Dijkstra_Animation.gif" style="object-fit:contain;">
 </div>
 
-
-
-#### Cells Grouped Based on Distance from Origin
+### Step 4 - Group Cells into Regions Based on Distance from Origin
 
 <div style="display:flex; gap:5px; justify-content:center;">
   <img src="photos/isochrone_res_4_dark_denver_example.png" style= object-fit:contain;">
 </div>
 
-This map and the underlying data create a single framework that can be used to analyze
+Once each cell's distance from the origin has been identified, cells can be grouped by any given distance increment. Seen here are isochrones with increments of 350 miles from Denver, CO at resolution 4 (resolution 4 cells are ~27 miles accross at the widest point).  
 
-1. Current state 
-2. Historical data
-3. Forecasts and Simulations  
-
-The ability to change isochrone distance (miles per day) and resolution (cell size) remains consistent across all uses.
+Blank cells represent areas where no roads were found.
 
 ## Appendix
 
@@ -136,12 +129,12 @@ Isochrone maps are most often created for short transit distances, typically for
 - Is there an available driver within 5 minutes of a user?
 - Where can a driver travel within 5 minutes?
 
-Determining whether a user falls within a precomputed area is much easier than finding the distance to the nearest driver.
+Determining whether a user falls within a precomputed area is much easier than finding the distance from a user to the nearest driver.
 
 #### Zillow - Beaverton
 
 
-<div style="display:flex; gap:5px; justify-content:center;">
+<div style="display:flex; gap:5px; justify-content:left;">
   <img src="photos/zillow_map.png" style="object-fit:contain;">
 </div>
 
@@ -151,7 +144,7 @@ Determining whether a user falls within a precomputed area is much easier than f
 
 #### Public Transit – London (The Tube)
 
-<div style="display:flex; gap:5px; justify-content:center;">
+<div style="display:flex; gap:5px; justify-content:left;">
   <img src="photos/london_public_transit_iso.png" style="height:auto; object-fit:contain;">
 </div>
 Source: traveltime.com
@@ -166,7 +159,7 @@ Note: Precise subway isochrones often show “islands” of accessibility, as un
 
 Isochrones can also be generated for greater distances (often with less precision).
 
-<div style="display:flex; gap:2px; justify-content:center;">
+<div style="display:flex; gap:2px; justify-content:left;">
   <img src="photos/simple_conus_isochrone.png" style="height:350; object-fit:contain;">
   <img src="photos/Pixilated_UPS_Ground_Transit_Time_Shipping_Map-01_1024x1024.webp" style=height:350; object-fit:contain;">
   <!-- <img src="photos/fedex-shipping-map-72034.jpg" style="max-width:38%; height:auto; object-fit:contain;"> -->
@@ -175,13 +168,13 @@ Isochrones can also be generated for greater distances (often with less precisio
   <!-- Precision/Resolution: Low to High -->
 </div>
 
-Isochrone lines landing exactly on state borders indicate these isochrones were likely created using estimates or are based on specific third‑party service areas, which often extend exactly to state borders and other arbitrary boundaries (FedEx/UPS).
+Isochrone lines landing exactly on state borders indicate these isochrones were likely created using rough estimates or are based on specific cariers infastructure and service areas, which often extend exactly to state borders and other arbitrary boundaries (FedEx/UPS).
 
 ### Limitations of Existing Methods
 
 #### Scaling to continental size
 
-Current methods used to generate isochrones for intercity transit are too resource-intensive to scale to continental size. Isochrone generation tools available online usually allow isochrones representing driving distances up to 60 minutes (3 hours max). Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical isochrone origin locations. Current methods must trade precision and resolution for larger geographic scale.
+Current methods used to generate isochrones for intercity transit are too resource-intensive to scale to continental size. No webtool available free online generates isochrones larger than a 3-hour drive distance. Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical origin locations. Current methods trade accuracy, precision and resolution for larger geographic scale.
 
 <div style="display:flex; gap:5px;justify-content:center;">
   <img src="photos/res_vs_scale.png" style="object-fit:contain;">
