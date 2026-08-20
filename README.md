@@ -39,7 +39,7 @@ ___
 - Ability to vary origin location and isochrone distance (miles per day)
 - No Google Maps API or other paid services — all dependencies are free and open source.  
 - Isochrones can be used instead of an "Origin / Destination pairing table" in many applications. Alternatively, isochrones can help with maintenance of these tables.
-- Extensibility: The map & underlying data can be enhanced and contextualized with other supply chain data & visuals.
+- The map & underlying data can be enhanced and contextualized with other supply chain data & visuals.
 
 Generally, the methods used here can be summarized into 3 steps.
 
@@ -69,8 +69,8 @@ To cover a geographic area in even-sized cells, a polygon that tiles regularly s
 
   <p>
     <i>
-      Green: Valid Road-Snapped Point (road point is within cell)<br>
-      Red: Invalid Road-Snapped Point (road point falls outside cell)
+      Green: Valid Road-Snapped Point (valid road point found within cell)<br>
+      Red: Invalid Road-Snapped Point (no valid road point found within cell)
     </i>
   </p>
 </div>
@@ -176,9 +176,11 @@ Isochrone lines landing exactly on state borders indicate these isochrones were 
 
 Current methods used to generate isochrones for intercity transit are too resource-intensive to scale to continental size. No webtool available free online generates isochrones larger than a 3-hour drive distance. Current methods to generate larger isochrones rely on specific carriers' geographical service areas and/or historical transportation data. These methods are not well suited for simulating large-scale logistics networks or testing hypothetical origin locations. Current methods trade accuracy, precision and resolution for larger geographic scale.
 
-<div style="display:flex; gap:5px;justify-content:center;">
-  <img src="photos/res_vs_scale.png" style="object-fit:contain;">
+<div style="display:flex; gap:5px; justify-content:left;">
+  <img src="photos/res_vs_scale.png"
+       style="object-fit:contain; max-width:500px; max-height:400px;">
 </div>
+
 
 ## Quick Start
 
