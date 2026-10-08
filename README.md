@@ -41,8 +41,7 @@ ___
 - Isochrones can be used instead of an "Origin / Destination pairing table" in many applications. Alternatively, isochrones can help with maintenance of these tables.
 - The map & underlying data can be enhanced and contextualized with other supply chain data & visuals.
 
-Generally, the methods used here can be summarized into 3 steps.
-
+The methods used here can be summarized by the follow 4 steps.
 
 ### Step 1 - Divide a given geographic area into even-sized cells (h3 Hexagons)
 
@@ -129,7 +128,8 @@ Isochrone maps are most often created for short transit distances, typically for
 - Is there an available driver within 5 minutes of a user?
 - Where can a driver travel within 5 minutes?
 
-Determining whether a user falls within a precomputed area is much easier than finding the distance from a user to the nearest driver.
+Determining whether a user falls within a predefined area can be much simplier than finding the estimated driving distance from the nearest driver to a user. Espically when these types of estimations needs to be made many times.
+
 
 #### Zillow - Beaverton
 
